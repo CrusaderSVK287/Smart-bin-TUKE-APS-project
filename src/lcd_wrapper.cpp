@@ -3,7 +3,7 @@
 #include "../inc/lcd_wrapper.h"
 #include "../inc/smart_bin.h"
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+static LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 static bool is_backlight_on = false;
 
