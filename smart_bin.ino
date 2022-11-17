@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "inc/smart_bin.h"
 
 void setup()
 {
