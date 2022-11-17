@@ -3,13 +3,13 @@
 
 void setup()
 {
-    pinMode(LED_BUILTIN, OUTPUT);
+        Serial.begin(SERIAL_PORT);
+        Serial.println("STARTING SERIAL COMMUNICATION ON 9600");
+
+        pinMode(MOTION_SENSOR_PIN, INPUT);
 }
 
 void loop()
 {
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(1000);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(1000);
+        motion_sensor_tracker();
 }
