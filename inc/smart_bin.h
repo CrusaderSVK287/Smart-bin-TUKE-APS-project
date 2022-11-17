@@ -3,18 +3,14 @@
 
 #include <Arduino.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define SERIAL_PORT 9600
-#define MOTION_SENSOR_PIN PIN_A4
+#define MOTION_SENSOR_PIN PIN_A0
 
 /*
  * If you wish to get debug information, define DEBUG before this ifdef.
  * Please refrain from keeping DEBUG defined when pushing to SC
  */
-
+#define DEBUG
 #ifdef DEBUG
 #define PRINT_DEBUG(MSG) Serial.print(MSG);             \
                          Serial.print(" ");             \
@@ -38,9 +34,5 @@ void motion_sensor_tracker();
  * 	  that will open a container
  */
 void wait_for_selection();
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* SMART_BIN_H */

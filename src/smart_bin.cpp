@@ -1,15 +1,13 @@
 #include "../inc/smart_bin.h"
-
-static volatile int8_t keep_scanning;
+#include "../inc/lcd_wrapper.h"
 
 void motion_sensor_tracker()
 {
-        keep_scanning = 1;
-        while(keep_scanning) {
+        while(1) {
                 if (digitalRead(MOTION_SENSOR_PIN) == HIGH) {
                         PRINT_DEBUG("Motion detected.");
                         wait_for_selection();
-                        keep_scanning = 0;
+                        break;
                 }
 
                 delay(1000);
