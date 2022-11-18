@@ -11,6 +11,10 @@ void setup()
         Serial.println("STARTING SERIAL COMMUNICATION ON 9600");
 
         pinMode(MOTION_SENSOR_PIN, INPUT);
+        pinMode(PIN_BTN_1, INPUT);
+        pinMode(PIN_BTN_2, INPUT);
+        pinMode(PIN_BTN_3, INPUT);
+        pinMode(PIN_BTN_4, INPUT);
 }
 
 void loop()

@@ -4,13 +4,25 @@
 #include <Arduino.h>
 
 #define SERIAL_PORT 9600
-#define MOTION_SENSOR_PIN PIN_A0
+
+#define TIMEOUT 20000
+#define BIN_CLOSE_TIMEOUT 5000
+
+#define MOTION_SENSOR_PIN PIN7
+#define PIN_BTN_1 PIN_A3
+#define PIN_BTN_2 PIN_A2
+#define PIN_BTN_3 PIN_A1
+#define PIN_BTN_4 PIN_A0
+#define PIN_SIGNAL_SEND PIN2
+
 
 /*
  * If you wish to get debug information, define DEBUG before this ifdef.
- * Please refrain from keeping DEBUG defined when pushing to SC
+ * Please refrain from keeping DEBUG defined when pushing to SC.
+ * Check before submiting for a pull request
  */
 #define DEBUG
+
 #ifdef DEBUG
 #define PRINT_DEBUG(MSG) Serial.print(MSG);             \
                          Serial.print(" ");             \
@@ -33,6 +45,12 @@ void motion_sensor_tracker();
  * 	  waits for user to press one of the buttons
  * 	  that will open a container
  */
-void wait_for_selection();
+void wait_and_handle_selection();
+
+/**
+ * @brief Function sends 4 bit signal from signal pin
+ * @param sig signal number to be sent (between 1 and 15 inclusive)
+ */
+void send_signal(int sig);
 
 #endif /* SMART_BIN_H */
