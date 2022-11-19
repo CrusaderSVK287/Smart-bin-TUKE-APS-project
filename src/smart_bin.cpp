@@ -1,9 +1,10 @@
 #include "../inc/smart_bin.h"
 #include "../inc/lcd_wrapper.h"
+#include <Wire.h>
 
 #define SIG_CHECK_PERIOD 100
 
-#define SIG_CLOSE_BINS 0b1111
+#define SIG_CLOSE_BINS 15
 #define SIG_OPEN_BIN1 1
 #define SIG_OPEN_BIN2 2
 #define SIG_OPEN_BIN3 3
@@ -66,7 +67,7 @@ void wait_and_handle_selection()
 
 void send_signal(int sig)
 {
-        if (sig < 0 || sig > 15) {
+        if (sig < 0 || sig > 0b1111) {
                 PRINT_DEBUG("Bad signal number");
                 return;
         }
@@ -76,11 +77,16 @@ void send_signal(int sig)
 
         signal_sent = true;
 
-        /*digitalWrite(PIN_SIGNAL_SEND, HIGH);
+        /*
+         * Since A4 and A5 I2C pins are already used by LCD display,
+         * we will be using a different pin for communication to slave board.
+         * See Development-notes.md "Master-slave-communication" section
+         */
+        digitalWrite(PIN_SIGNAL_SEND, HIGH);
         delay(100);
 
         for (size_t i = 0; i < 4; i++) {
-                digitalWrite(PIN_SIGNAL_SEND, sig >> i & HIGH);
+                digitalWrite(PIN_SIGNAL_SEND, sig >> i & 1);
                 delay(100);
-        }*/
+        }
 }
