@@ -16,6 +16,8 @@ Arduino UNO R3
 * folder <b>inc</b> - contains header (.h) files
 * README.md - this file containing project/repository information
 * smart_bin.ino - entry point of the program
+* folder <b>slave_board</b> - due to the way vs code arduino extention works,
+    code for slave board is in this folder. The structure of it is the same.
 
 If the structure of repository is changed (e.g. added another folder),
 please update the above readme section
