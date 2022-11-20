@@ -3,7 +3,7 @@
 
 #define SERIAL_PORT 9600
 
-#define SIG_RECIEVE_PIN PIN0
+#define SIG_RECIEVE_PIN PIN_A0
 
 /*
  * If you wish to get debug information, define DEBUG before this ifdef.

@@ -15,6 +15,8 @@ void setup()
         pinMode(PIN_BTN_2, INPUT);
         pinMode(PIN_BTN_3, INPUT);
         pinMode(PIN_BTN_4, INPUT);
+
+        pinMode(PIN_SIGNAL_SEND, OUTPUT);
 }
 
 void loop()

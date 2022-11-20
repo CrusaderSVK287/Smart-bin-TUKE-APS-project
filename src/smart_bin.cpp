@@ -3,6 +3,7 @@
 #include <Wire.h>
 
 #define SIG_CHECK_PERIOD 100
+#define SIGNAL_SEND_PERIOD 100
 
 #define SIG_CLOSE_BINS 15
 #define SIG_OPEN_BIN1 1
@@ -87,6 +88,8 @@ void send_signal(int sig)
 
         for (size_t i = 0; i < 4; i++) {
                 digitalWrite(PIN_SIGNAL_SEND, sig >> i & 1);
-                delay(100);
+                delay(SIGNAL_SEND_PERIOD);
         }
+
+        digitalWrite(PIN_SIGNAL_SEND, LOW);
 }

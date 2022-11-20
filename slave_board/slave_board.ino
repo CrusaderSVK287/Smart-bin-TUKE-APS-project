@@ -4,7 +4,7 @@
 void setup()
 {
         Serial.begin(SERIAL_PORT);
-        Serial.println("STARTING SERIAL COMMUNICATION ON 9600");
+        Serial.println("SLAVE BOARD STARTING SERIAL COMMUNICATION ON 9600");
 
         pinMode(SIG_RECIEVE_PIN, INPUT);
 }
@@ -12,6 +12,7 @@ void setup()
 void loop()
 {
         int sig = recieve_signal();
-        if (sig != -1)
+        if (sig >= 0) {
                 handle_signal(sig);
+        }
 }

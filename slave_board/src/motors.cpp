@@ -1,5 +1,8 @@
 #include <Arduino.h>
+#include <Servo.h>
 #include "../inc/motors.h"
+
+#define SIGNAL_BIT_RECV_PERIOD 100
 
 #define BIN_OPEN 1
 #define BIN_CLOSE 0
@@ -22,7 +25,9 @@ static void handle_bin_4(int open);
 /* Calls handle bin function to close the bin */
 static void close_bin();
 
-static int opened_bin;
+static Servo servo;
+
+static int opened_bin = 0;
 
 int recieve_signal()
 {
@@ -30,7 +35,7 @@ int recieve_signal()
                 delay(10);
 
         volatile int bit;
-        int recieved_signal = 0;
+        int signal_recv = 0;
 
         /* Checking for bad input */
         if (digitalRead(SIG_RECIEVE_PIN) != HIGH) {
@@ -41,17 +46,17 @@ int recieve_signal()
         delay(140);
         for (size_t i = 0; i < 4; i++) {
                 bit = digitalRead(SIG_RECIEVE_PIN);
-                recieved_signal |= bit << i;
-                delay(100);
+                signal_recv |= bit << i;
+                delay(SIGNAL_BIT_RECV_PERIOD);
         }
 
         PRINT_DEBUG("Recieved signal:");
-        PRINT_DEBUG(recieved_signal);
+        PRINT_DEBUG(signal_recv);
 
-        if (recieved_signal < 0 || recieved_signal > 15)
+        if (signal_recv < 0 || signal_recv > 15)
                 return -1;
         else
-                return recieved_signal;
+                return signal_recv;
 }
 
 void handle_signal(int signal)
@@ -81,6 +86,22 @@ static void handle_bin_1(int open)
         if ((open == BIN_OPEN && opened_bin != 0) ||
                 (open == BIN_CLOSE && opened_bin == 0))
                 return;
+
+        servo.attach(PIN_A1);
+
+        if (open > 0) {
+                PRINT_DEBUG("Opening bin 1");
+                for (int i = 0; i < 1024; i+=8) {
+                        servo.write(map(i, 0, 1023, 0, 90));
+                        delay(10);
+                }
+                opened_bin = SIGNAL_OPEN_BIN_1;
+        } else {
+                PRINT_DEBUG("Closing bin 1");
+                servo.write(map(0, 0, 1023, 0, 180));
+                opened_bin = BIN_CLOSE;
+                delay(500);
+        }
 }
 
 static void handle_bin_2(int open)
@@ -88,6 +109,22 @@ static void handle_bin_2(int open)
         if ((open == BIN_OPEN && opened_bin != 0) ||
                 (open == BIN_CLOSE && opened_bin == 0))
                 return;
+
+        servo.attach(PIN_A2);
+
+        if (open > 0) {
+                PRINT_DEBUG("Opening bin 1");
+                for (int i = 0; i < 1024; i+=8) {
+                        servo.write(map(i, 0, 1023, 0, 90));
+                        delay(10);
+                }
+                opened_bin = SIGNAL_OPEN_BIN_2;
+        } else {
+                PRINT_DEBUG("Closing bin 1");
+                servo.write(map(0, 0, 1023, 0, 180));
+                opened_bin = BIN_CLOSE;
+                delay(500);
+        }
 }
 
 static void handle_bin_3(int open)
@@ -106,6 +143,9 @@ static void handle_bin_4(int open)
 
 static void close_bin()
 {
+        if (opened_bin < 0)
+                return;
+
         switch (opened_bin)
         {
         case SIGNAL_OPEN_BIN_1: handle_bin_1(BIN_CLOSE);
