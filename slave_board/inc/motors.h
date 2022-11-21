@@ -4,6 +4,10 @@
 #define SERIAL_PORT 9600
 
 #define SIG_RECIEVE_PIN PIN_A0
+#define PIN_BIN_1 PIN4
+#define PIN_BIN_2 PIN5
+#define PIN_BIN_3 PIN6
+#define PIN_BIN_4 PIN7
 
 /*
  * If you wish to get debug information, define DEBUG before this ifdef.

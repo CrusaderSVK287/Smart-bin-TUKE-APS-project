@@ -7,10 +7,10 @@
 #define BIN_OPEN 1
 #define BIN_CLOSE 0
 
-#define SIGNAL_OPEN_BIN_1 1
-#define SIGNAL_OPEN_BIN_2 2
-#define SIGNAL_OPEN_BIN_3 3
-#define SIGNAL_OPEN_BIN_4 4
+#define SIGNAL_BIN_1 1
+#define SIGNAL_BIN_2 2
+#define SIGNAL_BIN_3 3
+#define SIGNAL_BIN_4 4
 #define SIGNAL_CLOSE_OPENED_BIN 15
 
 /*
@@ -18,10 +18,13 @@
  * Parameter open indicates whether bin should be opened ( value > 0),
  * or close ( value <= 0 ).
  */
-static void handle_bin_1(int open);
-static void handle_bin_2(int open);
-static void handle_bin_3(int open);
-static void handle_bin_4(int open);
+static void open_bin(int bin);
+
+/*
+ * Function returns pin corresponsing with the appropriate bin
+ */
+static int attach_pin(int bin);
+
 /* Calls handle bin function to close the bin */
 static void close_bin();
 
@@ -66,13 +69,10 @@ void handle_signal(int signal)
 
         switch (signal)
         {
-        case SIGNAL_OPEN_BIN_1: handle_bin_1(BIN_OPEN);
-                break;
-        case SIGNAL_OPEN_BIN_2: handle_bin_2(BIN_OPEN);
-                break;
-        case SIGNAL_OPEN_BIN_3: handle_bin_3(BIN_OPEN);
-                break;
-        case SIGNAL_OPEN_BIN_4: handle_bin_4(BIN_OPEN);
+        case SIGNAL_BIN_1:
+        case SIGNAL_BIN_2:
+        case SIGNAL_BIN_3:
+        case SIGNAL_BIN_4: open_bin(signal);
                 break;
         case SIGNAL_CLOSE_OPENED_BIN: close_bin();
                 break;
@@ -81,82 +81,58 @@ void handle_signal(int signal)
         }
 }
 
-static void handle_bin_1(int open)
+static void open_bin(int bin)
 {
-        if ((open == BIN_OPEN && opened_bin != 0) ||
-                (open == BIN_CLOSE && opened_bin == 0))
+        if (opened_bin != 0)
                 return;
 
-        servo.attach(PIN_A1);
+        int attached_pin = attach_pin(bin);
+        if (attached_pin < 0)
+                return;
 
-        if (open > 0) {
-                PRINT_DEBUG("Opening bin 1");
-                for (int i = 0; i < 1024; i+=8) {
-                        servo.write(map(i, 0, 1023, 0, 90));
-                        delay(10);
-                }
-                opened_bin = SIGNAL_OPEN_BIN_1;
-        } else {
-                PRINT_DEBUG("Closing bin 1");
-                servo.write(map(0, 0, 1023, 0, 180));
-                opened_bin = BIN_CLOSE;
-                delay(500);
+        servo.detach();
+        servo.attach(attached_pin);
+
+        PRINT_DEBUG("Opening bin");
+        PRINT_DEBUG(attached_pin);
+
+        for (int i = 0; i < 1024; i+=8) {
+                servo.write(map(i, 0, 1023, 0, 90));
+                delay(10);
         }
-}
-
-static void handle_bin_2(int open)
-{
-        if ((open == BIN_OPEN && opened_bin != 0) ||
-                (open == BIN_CLOSE && opened_bin == 0))
-                return;
-
-        servo.attach(PIN_A2);
-
-        if (open > 0) {
-                PRINT_DEBUG("Opening bin 1");
-                for (int i = 0; i < 1024; i+=8) {
-                        servo.write(map(i, 0, 1023, 0, 90));
-                        delay(10);
-                }
-                opened_bin = SIGNAL_OPEN_BIN_2;
-        } else {
-                PRINT_DEBUG("Closing bin 1");
-                servo.write(map(0, 0, 1023, 0, 180));
-                opened_bin = BIN_CLOSE;
-                delay(500);
-        }
-}
-
-static void handle_bin_3(int open)
-{
-        if ((open == BIN_OPEN && opened_bin != 0) ||
-                (open == BIN_CLOSE && opened_bin == 0))
-                return;
-}
-
-static void handle_bin_4(int open)
-{
-        if ((open == BIN_OPEN && opened_bin != 0) ||
-                (open == BIN_CLOSE && opened_bin == 0))
-                return;
+        opened_bin = bin;
 }
 
 static void close_bin()
 {
-        if (opened_bin < 0)
+        if (opened_bin == 0)
                 return;
 
-        switch (opened_bin)
-        {
-        case SIGNAL_OPEN_BIN_1: handle_bin_1(BIN_CLOSE);
-                break;
-        case SIGNAL_OPEN_BIN_2: handle_bin_2(BIN_CLOSE);
-                break;
-        case SIGNAL_OPEN_BIN_3: handle_bin_3(BIN_CLOSE);
-                break;
-        case SIGNAL_OPEN_BIN_4: handle_bin_4(BIN_CLOSE);
-                break;
-        default:
-                break;
-        }
+        int attached_pin = attach_pin(opened_bin);
+        if (attached_pin < 0)
+                return;
+
+        servo.detach();
+        servo.attach(attached_pin);
+        PRINT_DEBUG("Closing bin");
+        servo.write(map(0, 0, 1023, 0, 180));
+
+        opened_bin = BIN_CLOSE;
+        delay(100);
+}
+
+static int attach_pin(int bin)
+{
+        if (bin < 0 || bin > 3)
+                return -1;
+
+        static int pairs [5][2] = {
+                {0           , 0        },
+                {SIGNAL_BIN_1, PIN_BIN_1},
+                {SIGNAL_BIN_2, PIN_BIN_2},
+                {SIGNAL_BIN_3, PIN_BIN_3},
+                {SIGNAL_BIN_4, PIN_BIN_4}
+        };
+
+        return pairs[bin][1];
 }
