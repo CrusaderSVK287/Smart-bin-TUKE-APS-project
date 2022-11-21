@@ -1,8 +1,10 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
+/* Serial port for communication */
 #define SERIAL_PORT 9600
 
+/* defined pins */
 #define SIG_RECIEVE_PIN PIN_A0
 #define PIN_BIN_1 PIN4
 #define PIN_BIN_2 PIN5
@@ -14,8 +16,6 @@
  * Please refrain from keeping DEBUG defined when pushing to SC.
  * Check before submiting for a pull request
  */
-#define DEBUG
-
 #ifdef DEBUG
 #define PRINT_DEBUG(MSG) Serial.print(MSG);             \
                          Serial.print(" ");             \

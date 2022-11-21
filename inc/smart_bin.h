@@ -3,11 +3,14 @@
 
 #include <Arduino.h>
 
+/* Serial port for communication */
 #define SERIAL_PORT 9600
 
+/* Timeouts for choosing bin and closing bin */
 #define TIMEOUT 20000
 #define BIN_CLOSE_TIMEOUT 5000
 
+/* defined pins */
 #define MOTION_SENSOR_PIN PIN7
 #define PIN_BTN_1 PIN_A3
 #define PIN_BTN_2 PIN_A2
@@ -21,8 +24,6 @@
  * Please refrain from keeping DEBUG defined when pushing to SC.
  * Check before submiting for a pull request
  */
-#define DEBUG
-
 #ifdef DEBUG
 #define PRINT_DEBUG(MSG) Serial.print(MSG);             \
                          Serial.print(" ");             \
