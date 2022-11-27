@@ -38,7 +38,7 @@ void lcd_init()
         lcd.clear();
         lcd.print("STARTING");
         lcd.setCursor(0,1);
-        lcd.print("Smart bin v1.0");
+        lcd.print("Smart bin v1.1");
 
         /* Wait for 2 seconds and turn off display */
         delay(2000);
@@ -61,8 +61,8 @@ void lcd_print_at(int y, int x, const char *text)
         if (y>1 || x>15 || !text || strlen(text) > 16) {
                 PRINT_DEBUG("Bad arguments.");
                 lcd_print_at(0, 0, "PRINT ERROR");
-        }
                 return;
+        }
 
         /* Check whether backlight is on */
         if (!is_backlight_on) {

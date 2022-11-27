@@ -13,6 +13,13 @@
 #define SIG_OPEN_BIN3 3
 #define SIG_OPEN_BIN4 4
 
+/*
+ * Function checks whether any button is pressed at the moment
+ * returns 1 if yes, 0 if no.
+ * made inline to avoid unnecessary function allocation on stack
+ */
+static inline int any_button();
+
 /* Used to determine whether signal was send or not */
 static bool signal_sent = false;
 
@@ -23,6 +30,7 @@ void motion_sensor_tracker()
                 if (digitalRead(MOTION_SENSOR_PIN) == HIGH) {
                         PRINT_DEBUG("Motion detected.");
                         wait_and_handle_selection();
+
                         break;
                 }
 
@@ -38,7 +46,6 @@ void wait_and_handle_selection()
 
         /* Turning on the display and displaying information */
         lcd_turn_backlight(true);
-
         lcd_print_at(0, 0, "1 Plast   3 Sklo");
         lcd_print_at(1, 0, "2 Papier  4 Kovy");
 
@@ -65,11 +72,20 @@ void wait_and_handle_selection()
                 lcd_clear();
                 lcd_print_at(0, 0, "Kos sa otvara..");
                 lcd_print_at(1, 0, "Prosim cakajte");
+                delay(2000);
+                lcd_clear();
+                lcd_print_at(0, 0, "Pre zatvorenie");
+                lcd_print_at(1, 0, "stlacte znova");
                 timeout = BIN_CLOSE_TIMEOUT;
         }
 
-        /* Wait for the remaining timeout (usually eighter BIN_CLOSE_TIMEOUT or 0 */
-        delay(timeout);
+        /* Wait for the remaining timeout or break on input */
+        for (/* timeout */ ; timeout > 0; timeout -= SIG_CHECK_PERIOD) {
+                delay(SIG_CHECK_PERIOD);
+                /* signal will be sent on line 91 */
+                if (any_button() == 1)
+                        break;
+        }
         lcd_turn_backlight(false);
 
         /* If signal has been sent to open a bin, send a signal to close it */
@@ -103,4 +119,12 @@ void send_signal(int sig)
         }
 
         digitalWrite(PIN_SIGNAL_SEND, LOW);
+}
+
+static inline int any_button()
+{
+        return (digitalRead(PIN_BTN_1) == HIGH ||
+                digitalRead(PIN_BTN_2) == HIGH ||
+                digitalRead(PIN_BTN_3) == HIGH ||
+                digitalRead(PIN_BTN_4) == HIGH) ? 1 : 0;
 }
