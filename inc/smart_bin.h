@@ -8,7 +8,7 @@
 
 /* Timeouts for choosing bin and closing bin */
 #define TIMEOUT 20000
-#define BIN_CLOSE_TIMEOUT 5000
+#define BIN_CLOSE_TIMEOUT 10000
 
 /* defined pins */
 #define MOTION_SENSOR_PIN PIN7
@@ -24,6 +24,7 @@
  * Please refrain from keeping DEBUG defined when pushing to SC.
  * Check before submiting for a pull request
  */
+#define DEBUG
 #ifdef DEBUG
 #define PRINT_DEBUG(MSG) Serial.print(MSG);             \
                          Serial.print(" ");             \
